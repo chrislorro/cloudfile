@@ -40,16 +40,16 @@
 #   }
 #
 class cloudfile (
-  String             $application      = undef,
-  String             $package_file     = undef,
-  String             $package_uri      = undef,
+  String             $application      = 'invader',
+  String             $package_file     = 'invader.zip',
+  String             $package_uri      = 's3://clawpupbuck',
   Boolean            $extract          = true,
   Enum[ 'local_az',
         'local_s3',
-        'std_http' ] $cloud_type       = std_http,
-  Optional[String]   $install_package  = undef,
+        'std_http' ] $cloud_type       = 'local_s3',
+  Optional[String]   $package_name     = undef,
   Optional[String]   $token            = undef,
-  Optional[String]   $aws_region       = undef,
+  Optional[String]   $aws_region       = 'eu-west-2',
 ) {
 
   include archive

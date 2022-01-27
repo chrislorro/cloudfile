@@ -101,12 +101,12 @@ define cloudfile::getfile (
   $download_options = ['--region', $aws_region, '--no-sign-request']
 
   archive { $_pkg_inst:
-    ensure       => $ensure,
-    extract      => $extract,
-    source       => $_pkg_src_uri,
-    extract_path => $_extract_dir,
-    creates      => $_pkg_inst,
-    cleanup      => false,
+    ensure           => $ensure,
+    extract          => $extract,
+    source           => $_pkg_src_uri,
+    extract_path     => $_extract_dir,
+    creates          => $_pkg_inst,
+    cleanup          => false,
     download_options => $download_options,
   }
 }
