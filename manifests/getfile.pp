@@ -117,21 +117,19 @@ define cloudfile::getfile (
         windows => 'C:\\Program Files\\Amazon\\AWSCLIV2'
       }
 
-      exec { $_pkg_inst:
-        cwd     => $_extract_dir,
-        command => "aws s3 cp ${_pkg_src_uri} ${_extract_dir} ${aws_options}",
-        path    => $aws_cmd,
-        creates => $_pkg_inst,
-      }
+  #    exec { $_pkg_inst:
+  #      cwd     => $_extract_dir,
+#        command => "aws s3 cp ${_pkg_src_uri} ${_extract_dir} ${aws_options}",
+#        path    => $aws_cmd,
+#        creates => $_pkg_inst,
+ #     }
 
-      archive { $title:
+      archive { $_pkg_inst:
           ensure       => present,
-          path         => $_pkg_inst,
-          source       => $_pkg_inst,
+          source       => $_pkg_src_uri,
           extract      => true,
           extract_path => $_extract_dir,
           require      => Exec[$_pkg_inst],
-          cleanup      => false,
       }
     }
 
