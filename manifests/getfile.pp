@@ -102,9 +102,10 @@ define cloudfile::getfile (
       } else {
 
         exec { 'install_aws_cli':
-          command     => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
-          refreshonly => true,
-          notify      => Exec[$_pkg_inst]
+          command => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
+          creates => '/usr/local/bin/aws',
+ #         require => Archive['Get AWS CLI'],
+          notify  => Exec[$_pkg_inst]
         }
       }
 
