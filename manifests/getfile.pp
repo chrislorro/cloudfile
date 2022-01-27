@@ -118,22 +118,19 @@ define cloudfile::getfile (
       }
 
       exec { $_pkg_inst:
-        cwd       => $_extract_dir,
-        command   => "aws s3 cp ${_pkg_src_uri} ${_extract_dir} ${aws_options}",
-        path      => $aws_cmd,
-        logoutput => true,
-        creates   => $_pkg_inst,
+        cwd     => $_extract_dir,
+        command => "aws s3 cp ${_pkg_src_uri} ${_extract_dir} ${aws_options}",
+        path    => $aws_cmd,
+        creates => $_pkg_inst,
       }
 
-      $_extract = $extract
-
- #     if $_extract == 'true' {
-        archive { $_pkg_inst:
+      archive { $_pkg_inst:
           ensure       => present,
+          source       => $_pkg_inst,
           extract      => true,
           extract_path => $_extract_dir,
-   #       require      => Exec[$_pkg_inst],
- #       }
+          require      => Exec[$_pkg_inst],
+          cleanup      => false,
       }
     }
 

@@ -33,21 +33,20 @@
 #     package_file => 'invader.tar.gz',
 #     package_uri  => 's3://chrislaw',
 #     extract      => true,
-#     cloud_type   => std_http,
-#     az_token     => local_s3,
+#     cloud_type   => local_s3,
 #     aws_region   => undef,
 #   }
 #
 class cloudfile (
-  String              $application        = undef,
-  String              $package_file       = undef,
-  String              $package_uri        = undef,
-  Boolean             $extract            = true,
+  String              $application  = undef,
+  String              $package_file = undef,
+  String              $package_uri  = undef,
+  Boolean             $extract      = true,
   Enum[ 'local_az',
         'local_s3',
-        'std_http' ]  $cloud_type         = std_http,
-  Optional[String]    $az_token           = undef,
-  Optional[String]    $aws_region         = undef,
+        'std_http' ]  $cloud_type   = std_http,
+  Optional[String]    $token        = undef,
+  Optional[String]    $aws_region   = undef,
 ) {
 
   include archive
@@ -56,7 +55,7 @@ class cloudfile (
     pkg_uri    => $package_uri,
     app_name   => $application,
     extract    => $extract,
-    access_key => $az_token,
+    access_key => $token,
     cloud_type => $cloud_type,
     aws_region => $aws_region,
   }
