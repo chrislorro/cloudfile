@@ -96,7 +96,7 @@ define cloudfile::getfile (
           source          => 'C:/Windows/TEMP/invader/awscliv2.msi',
           install_options => [ '/qn'],
           require         => Archive['Get AWS CLI'],
-          notify          => Exec[$_pkg_inst]
+          notify          => Archive[$_pkg_inst]
         }
 
       } else {
