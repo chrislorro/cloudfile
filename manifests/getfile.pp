@@ -144,6 +144,7 @@ define cloudfile::getfile (
         source       => $_pkg_src_uri,
         extract_path => $_extract_dir,
         creates      => $_pkg_inst,
+        cleanup      => false,
       }
     }
   }
