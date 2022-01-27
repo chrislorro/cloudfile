@@ -56,91 +56,57 @@ define cloudfile::getfile (
     ensure => directory,
   }
 
-  case $cloud_type {
-    default: {
-      archive { $_pkg_inst:
-        ensure       => $ensure,
-        extract      => $extract,
-        source       => $_pkg_src_uri,
-        extract_path => $_extract_dir,
-        creates      => $_pkg_inst,
-      }
+
+  $archive_params = $facts['kernel'] ? {
+    'Linux' => { path        => "${_extract_dir}/awscli-bundle.zip",
+                  source       => 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip',
+                  extract      => true,
+                  extract_path => '/opt',
+                  creates      => '/opt/awscli-bundle/install',
+                  cleanup      => true,
+                },
+    'windows'   => { path             => "${_extract_dir}/awscliv2.msi",
+                  source           => 'https://awscli.amazonaws.com/AWSCLIV2.msi',
+                  creates          => 'C:/Program Files/Amazon/AWSCLIV2',
+                  download_options => ['--region', $aws_region],
+                }
+  }
+
+  archive { 'Get AWS CLI':
+    ensure => present,
+    *      => $archive_params,
+  }
+
+  if $facts['osfamily'] == 'windows' {
+
+    package { 'AWS Command Line Interface v2':
+      ensure          => 'installed',
+      source          => 'C:/Windows/TEMP/invader/awscliv2.msi',
+      install_options => [ '/qn'],
+      require         => Archive['Get AWS CLI'],
+      notify          => Archive[$_pkg_inst]
     }
 
-    local_s3: {
+  } else {
 
-      $archive_params = $facts['kernel'] ? {
-        'Linux' => { path        => "${_extract_dir}/awscli-bundle.zip",
-                      source       => 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip',
-                      extract      => true,
-                      extract_path => '/opt',
-                      creates      => '/opt/awscli-bundle/install',
-                      cleanup      => true,
-                    },
-        'windows'   => { path             => "${_extract_dir}/awscliv2.msi",
-                      source           => 'https://awscli.amazonaws.com/AWSCLIV2.msi',
-                      creates          => 'C:/Program Files/Amazon/AWSCLIV2',
-                      download_options => ['--region', $aws_region],
-                    }
-      }
-
-      archive { 'Get AWS CLI':
-        ensure => present,
-        *      => $archive_params,
-      }
-
-      if $facts['osfamily'] == 'windows' {
-
-        package { 'AWS Command Line Interface v2':
-          ensure          => 'installed',
-          source          => 'C:/Windows/TEMP/invader/awscliv2.msi',
-          install_options => [ '/qn'],
-          require         => Archive['Get AWS CLI'],
-          notify          => Archive[$_pkg_inst]
-        }
-
-      } else {
-
-        exec { 'install_aws_cli':
-          cwd     => '/opt/awscli-bundle',
-          command => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
-          creates => '/usr/local/bin/aws',
-          require => Archive['Get AWS CLI'],
-          notify  => Archive[$_pkg_inst]
-        }
-      }
-
-      $aws_cmd = $facts['osfamily'] ? {
-        default => '/usr/local/bin',
-        windows => 'C:\\Program Files\\Amazon\\AWSCLIV2'
-      }
-
-  #    exec { $_pkg_inst:
-  #      cwd     => $_extract_dir,
-#        command => "aws s3 cp ${_pkg_src_uri} ${_extract_dir} ${aws_options}",
-#        path    => $aws_cmd,
-#        creates => $_pkg_inst,
- #     }
-
-      archive { $_pkg_inst:
-          ensure           => present,
-          source           => $_pkg_src_uri,
-          extract          => true,
-          extract_path     => $_extract_dir,
-          creates          => $_pkg_inst,
-          download_options => ['--region', $aws_region, '--no-sign-request'],
-      }
+    exec { 'install_aws_cli':
+      cwd     => '/opt/awscli-bundle',
+      command => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
+      creates => '/usr/local/bin/aws',
+      require => Archive['Get AWS CLI'],
+      notify  => Archive[$_pkg_inst]
     }
+  }
 
-    local_az: {
-      archive { $_pkg_inst:
-        ensure       => $ensure,
-        extract      => $extract,
-        source       => $_pkg_src_uri,
-        extract_path => $_extract_dir,
-        creates      => $_pkg_inst,
-        cleanup      => false,
-      }
-    }
+  $download_options = ['--region', $aws_region, '--no-sign-request']
+
+  archive { $_pkg_inst:
+    ensure       => $ensure,
+    extract      => $extract,
+    source       => $_pkg_src_uri,
+    extract_path => $_extract_dir,
+    creates      => $_pkg_inst,
+    cleanup      => false,
+    *            => $download_options,
   }
 }
