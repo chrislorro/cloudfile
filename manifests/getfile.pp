@@ -106,7 +106,7 @@ define cloudfile::getfile (
           command => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
           creates => '/usr/local/bin/aws',
           require => Archive['Get AWS CLI'],
-          notify  => Exec[$_pkg_inst]
+          notify  => Archive[$_pkg_inst]
         }
       }
 
