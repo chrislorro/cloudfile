@@ -98,7 +98,10 @@ define cloudfile::getfile (
     }
   }
 
-  $download_options = ['--region', $aws_region, '--no-sign-request']
+  $download_options = $cloud_type ? {
+    local_s3 => ['--region', $aws_region, '--no-sign-request'],
+    default  => undef,
+  }
 
   archive { $_pkg_inst:
     ensure       => $ensure,
