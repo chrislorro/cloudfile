@@ -36,7 +36,6 @@ define cloudfile::getfile (
   String                    $cloud_type   = undef,
   Optional[String]          $access_key   = undef,
   Optional[String]          $aws_region   = $aws_region,
-  Optional[Array]           $download_options = undef,
 
 ) {
 
@@ -99,9 +98,10 @@ define cloudfile::getfile (
     }
   }
 
-if $download_options == 'undef' {
-  $_download_options = ['--region', $aws_region, '--no-sign-request']
-}
+  $download_options = $cloud_type ? {
+    local_s3 => ['--region', $aws_region, '--no-sign-request'],
+    default  => undef,
+  }
 
   archive { $_pkg_inst:
     ensure           => $ensure,
@@ -110,6 +110,6 @@ if $download_options == 'undef' {
     extract_path     => $_extract_dir,
     creates          => $_pkg_inst,
     cleanup          => false,
-    download_options => $_download_options,
+    download_options => $download_options,
   }
 }
