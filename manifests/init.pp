@@ -46,7 +46,7 @@ class cloudfile (
   Enum[ 'local_az',
         'local_s3',
         'std_http' ]  $cloud_type         = std_http,
-  Optional[string]    $az_token           = undef,
+  Optional[String]    $az_token           = undef,
   Optional[String]    $aws_region         = undef,
 ) {
 
