@@ -125,11 +125,12 @@ define cloudfile::getfile (
  #     }
 
       archive { $_pkg_inst:
-          ensure       => present,
-          source       => $_pkg_src_uri,
-          extract      => true,
-          extract_path => $_extract_dir,
-          creates      => $_pkg_inst,
+          ensure           => present,
+          source           => $_pkg_src_uri,
+          extract          => true,
+          extract_path     => $_extract_dir,
+          creates          => $_pkg_inst,
+          download_options => ['--region', $aws_region],
       }
     }
 
