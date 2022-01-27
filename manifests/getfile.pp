@@ -122,15 +122,16 @@ define cloudfile::getfile (
         command => "aws s3 cp ${_pkg_src_uri} ${_extract_dir} ${aws_options}",
         path    => $aws_cmd,
         creates => $_pkg_inst,
-     }
+        notify  => Archive['$_pkg_inst']
+      }
 
       archive { $_pkg_inst:
           ensure           => present,
-          source           => $_pkg_src_uri,
-          extract          => true,
+          extract          => $extract,
           extract_path     => $_extract_dir,
           creates          => $_pkg_inst,
           download_options => ['--region', $aws_region],
+          cleanup          => false,
       }
     }
 
