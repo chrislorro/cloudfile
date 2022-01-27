@@ -87,7 +87,6 @@ define cloudfile::getfile (
       archive { 'Get AWS CLI':
         ensure => present,
         *      => $archive_params,
-        notify => Exec['install_aws_cli']
       }
 
       if $facts['osfamily'] == 'windows' {
