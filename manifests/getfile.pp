@@ -127,13 +127,13 @@ define cloudfile::getfile (
 
       $_extract = $extract
 
-      if $_extract == 'true' {
+ #     if $_extract == 'true' {
         archive { $_pkg_inst:
           ensure       => $ensure,
           extract      => true,
           extract_path => $_extract_dir,
    #       require      => Exec[$_pkg_inst],
-        }
+ #       }
       }
     }
 
