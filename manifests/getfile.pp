@@ -125,7 +125,9 @@ define cloudfile::getfile (
         creates   => $_pkg_inst,
       }
 
-      if $extract {
+      $_extract = $extract
+
+      if $_extract == 'true' {
         archive { $_pkg_inst:
           ensure       => $ensure,
           extract      => true,
