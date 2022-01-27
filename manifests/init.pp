@@ -1,4 +1,4 @@
-# @summary Download archived packages from various locations to prepare for local installation
+# @summary Download archived packages from various locations and optionally ocal install
 #
 # A module to download application files from cloud filestores or http/https hosted packages,
 # currently compatable with AWS and Azure cloud providers
@@ -19,6 +19,8 @@
 # @params cloud_type
 #   The cloud platform that is used to host the application package
 #
+# @params install_package
+#   Optinal parameter to install the package (this option will be enhanced in the next release)
 # @params az_token
 #   Optional parameter for retreive Azure filestore packages, 
 #    token is expected if IAM is configured on the platform
@@ -48,18 +50,16 @@ class cloudfile (
   Optional[String]   $install_package  = undef,
   Optional[String]   $token            = undef,
   Optional[String]   $aws_region       = undef,
-  Optional[Array]    $download_options = undef,
 ) {
 
   include archive
 
   cloudfile::getfile { $package_file:
-    pkg_uri          => $package_uri,
-    app_name         => $application,
-    extract          => $extract,
-    access_key       => $token,
-    cloud_type       => $cloud_type,
-    aws_region       => $aws_region,
-    download_options => $download_options,
+    pkg_uri    => $package_uri,
+    app_name   => $application,
+    extract    => $extract,
+    access_key => $token,
+    cloud_type => $cloud_type,
+    aws_region => $aws_region,
   }
 }
