@@ -99,7 +99,7 @@ define cloudfile::getfile (
     }
   }
 
-if !defined($download_options) {
+if !defined('$download_options') {
   $_download_options = ['--region', $aws_region, '--no-sign-request']
 }
 
@@ -110,6 +110,6 @@ if !defined($download_options) {
     extract_path     => $_extract_dir,
     creates          => $_pkg_inst,
     cleanup          => false,
-    download_options => $download_options,
+    download_options => $_download_options,
   }
 }
