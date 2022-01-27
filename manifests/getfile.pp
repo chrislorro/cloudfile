@@ -110,8 +110,6 @@ define cloudfile::getfile (
         }
       }
 
-      $aws_options = '--no-sign-request'
-
       $aws_cmd = $facts['osfamily'] ? {
         default => '/usr/local/bin',
         windows => 'C:\\Program Files\\Amazon\\AWSCLIV2'
@@ -130,7 +128,7 @@ define cloudfile::getfile (
           extract          => true,
           extract_path     => $_extract_dir,
           creates          => $_pkg_inst,
-          download_options => ['--region', $aws_region],
+          download_options => ['--region', $aws_region, '--no-sign-request'],
       }
     }
 
