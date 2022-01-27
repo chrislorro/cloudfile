@@ -52,7 +52,7 @@ class cloudfile (
 
   include archive
 
-  profile::apps::cloud::storage_bucket { $package_file:
+  cloudfile::getfile { $package_file:
     pkg_uri    => $package_uri,
     app_name   => $application,
     extract    => $extract,
