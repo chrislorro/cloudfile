@@ -132,7 +132,7 @@ define cloudfile::getfile (
           ensure       => $ensure,
           extract      => true,
           extract_path => $_extract_dir,
-          require      => Exec[$_pkg_inst],
+   #       require      => Exec[$_pkg_inst],
         }
       }
     }
