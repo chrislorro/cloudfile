@@ -124,10 +124,10 @@ define cloudfile::getfile (
         creates => $_pkg_inst,
       }
 
-      archive { $_pkg_inst:
+      archive { $title:
           ensure       => present,
           source       => $_pkg_inst,
-          extract      => true,
+          extract      => $extract,
           extract_path => $_extract_dir,
           require      => Exec[$_pkg_inst],
           cleanup      => false,
