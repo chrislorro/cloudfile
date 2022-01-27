@@ -96,7 +96,7 @@ define cloudfile::getfile (
           source          => 'C:/Windows/TEMP/invader/awscliv2.msi',
           install_options => [ '/qn'],
           require         => Archive['Get AWS CLI'],
-          notify          => Exec[$_pkg_inst]
+          notify          => Archive[$_pkg_inst]
         }
 
       } else {
@@ -119,20 +119,18 @@ define cloudfile::getfile (
 
   #    exec { $_pkg_inst:
   #      cwd     => $_extract_dir,
-  #      command => "aws s3 cp ${_pkg_src_uri} ${_extract_dir} ${aws_options}",
-  #      path    => $aws_cmd,
-  #      creates => $_pkg_inst,
-  #      notify  => Archive[$_pkg_inst]
-  #    }
+#        command => "aws s3 cp ${_pkg_src_uri} ${_extract_dir} ${aws_options}",
+#        path    => $aws_cmd,
+#        creates => $_pkg_inst,
+ #     }
 
       archive { $_pkg_inst:
           ensure           => present,
-          source       => $_pkg_inst,
-          extract          => $extract,
+          source           => $_pkg_src_uri,
+          extract          => true,
           extract_path     => $_extract_dir,
           creates          => $_pkg_inst,
-   #       download_options => ['--region', $aws_region],
-          cleanup          => false,
+          download_options => ['--region', $aws_region],
       }
     }
 
