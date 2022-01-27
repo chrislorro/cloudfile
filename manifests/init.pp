@@ -38,25 +38,27 @@
 #   }
 #
 class cloudfile (
-  String              $application  = undef,
-  String              $package_file = undef,
-  String              $package_uri  = undef,
-  Boolean             $extract      = true,
+  String             $application      = undef,
+  String             $package_file     = undef,
+  String             $package_uri      = undef,
+  Boolean            $extract          = true,
   Enum[ 'local_az',
         'local_s3',
-        'std_http' ]  $cloud_type   = std_http,
-  Optional[String]    $token        = undef,
-  Optional[String]    $aws_region   = undef,
+        'std_http' ] $cloud_type       = std_http,
+  Optional[String]   $token            = undef,
+  Optional[String]   $aws_region       = undef,
+  Optional[Array]    $download_options = undef,
 ) {
 
   include archive
 
   cloudfile::getfile { $package_file:
-    pkg_uri    => $package_uri,
-    app_name   => $application,
-    extract    => $extract,
-    access_key => $token,
-    cloud_type => $cloud_type,
-    aws_region => $aws_region,
+    pkg_uri          => $package_uri,
+    app_name         => $application,
+    extract          => $extract,
+    access_key       => $token,
+    cloud_type       => $cloud_type,
+    aws_region       => $aws_region,
+    download_options => $download_options,
   }
 }
