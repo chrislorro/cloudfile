@@ -99,7 +99,7 @@ define cloudfile::getfile (
     }
   }
 
-if !defined('$download_options') {
+if $download_options == 'undef' {
   $_download_options = ['--region', $aws_region, '--no-sign-request']
 }
 
