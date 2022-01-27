@@ -86,7 +86,8 @@ define cloudfile::getfile (
 
       archive { 'Get AWS CLI':
         ensure => present,
-        *      => $archive_params
+        *      => $archive_params,
+        notify => Exec['install_aws_cli']
       }
 
       if $facts['osfamily'] == 'windows' {
@@ -104,7 +105,6 @@ define cloudfile::getfile (
         exec { 'install_aws_cli':
           command     => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
           refreshonly => true,
-          require     => Archive['Get AWS CLI'],
           notify      => Exec[$_pkg_inst]
         }
       }
