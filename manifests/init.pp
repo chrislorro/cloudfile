@@ -21,8 +21,8 @@
 #
 # @params install_package
 #   Optinal parameter to install the package (this option will be enhanced in the next release)
-# @params az_token
-#   Optional parameter for retreive Azure filestore packages, 
+# @params token
+#   Optional parameter for passing a token to the package URL tested on AZ for now, 
 #    token is expected if IAM is configured on the platform
 #
 # @params aws_region
