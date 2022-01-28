@@ -11,37 +11,42 @@
 # @param package_file
 #   The package name that will be downloaded from cloud storage
 #
-# @params package_uri
+# @param package_uri
 #   The URL of the cloud storage where the package is stored
 #
-# @params extract
+# @param extract
 #   set this parameter to extract the package from an archive file,
 #   it defaults to true because we expect a compressed file
 #
-# @params cloud_type
+# @param cloud_download
 #   The cloud platform that is used to host the application package
+#   Accepts 3 different parametes:
+#   *- standard: standard download using http://URI https://URI 
+#   *- aws_s3: Dowload using s3://URI and optional $install_options
+#   *- secure: Download using a secure token, must be used exclusive with token parameter
 #
-# @params install_package
+# @param package_name
 #   Optional parameter to install the package (this option will be enhanced in the next release)
 #
-# @params install_options
+# @param install_options
 #   Optional parameter to pass installation options to the package installer
-# @params token
+#
+# @param token
 #   Optional parameter for passing a token to the package URL tested on AZ for now, 
 #    token is expected if IAM is configured on the platform
 #
-# @params aws_region
+# @param aws_region
 #   Optional parameter for the AWS region, if this is not set for,
 #   windows agents the package uses a default deployed with the sdk
 #
 # @example retrieve an application call invader from s3 storage to linux
 #   class cloudfile {
-#     app_name     => 'invader',
-#     package_file => 'invader.tar.gz',
-#     package_uri  => 's3://chrislorro',
-#     extract      => true,
-#     cloud_type   => local_s3,
-#     aws_region   => eu-west-2,
+#     app_name       => 'invader',
+#     package_file   => 'invader.tar.gz',
+#     package_uri    => 's3://chrislorro',
+#     extract        => true,
+#     cloud_download => standard,
+#     aws_region     => eu-west-2,
 #   }
 #
 # @example retrieve an application call invader from s3 storage and install the application
@@ -50,7 +55,7 @@
 #     package_file    => 'McAfee.zip',
 #     package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
 #     extract         => true,
-#     cloud_type      => local_az,
+#     cloud_download  => 'secure',
 #     token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
 #     package_name    => McAfee.exe,
 #     install_options => [ '/SILENT', '/INSTALL=AGENT']
@@ -60,9 +65,9 @@ class cloudfile (
   String             $package_file    = undef,
   String             $package_uri     = undef,
   Boolean            $extract         = true,
-  Enum[ 'local_az',
-        'local_s3',
-        'std_http' ] $cloud_type      = undef,
+  Enum[ 'standard',
+        'aws_s3',
+        'secure' ]   $cloud_download  = undef,
   Optional[String]   $package_name    = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
@@ -84,7 +89,7 @@ class cloudfile (
     app_name   => $application,
     extract    => $extract,
     access_key => $token,
-    cloud_type => $cloud_type,
+    cloud_type => $cloud_download,
     aws_region => $aws_region,
   }
 

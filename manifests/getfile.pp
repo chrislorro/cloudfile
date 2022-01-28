@@ -3,14 +3,26 @@
 # == Definition: cloudfile::getfile
 #
 # Parameters:
+# @param pkg_uri
+#   $pkg_uri: $package_uri
 #
-# - *$pkg_uri: $package_uri
-# - *$app_name: $applicarion
-# - *$extract: default value true.
-# - *$ensure: default value true.
-# - *$cloud_type: default value std_http
-# - *$access_key: optional param default undef
-# - *$aws_region: optional param default is undef
+# @param $app_name
+#   $app_name: $application
+#
+# @param $extract
+#   $extract: default value true.
+#
+# @param $ensure
+#   $ensure: default value true.
+#
+# @param $cloud_type
+#   $cloud_type: default value std_http
+#
+# @param $access_key
+#   $access_key: optional param default undef
+#
+# @param $aws_region
+#   $aws_region: optional param default is undef
 #
 #  cloudfile::getfile { 'mycloudapp.2.0.tar.gz':
 #    app_name   => 'mycloudapp',
@@ -49,7 +61,7 @@ define cloudfile::getfile (
 
   $_pkg_src_uri = $cloud_type ? {
     default   => "${pkg_uri}/${title}",
-    'local_az' => "${pkg_uri}/${title}?${access_key}",
+    'secure' => "${pkg_uri}/${title}?${access_key}",
   }
 
   file { $_extract_dir:
@@ -99,7 +111,7 @@ define cloudfile::getfile (
   }
 
   $download_options = $cloud_type ? {
-    local_s3 => ['--region', $aws_region, '--no-sign-request'],
+    aws_s3 => ['--region', $aws_region, '--no-sign-request'],
     default  => undef,
   }
 
