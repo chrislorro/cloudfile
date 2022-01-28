@@ -61,7 +61,7 @@
 #     install_options => [ '/SILENT', '/INSTALL=AGENT']
 #   }
 class cloudfile (
-  String             $application     = undef,
+  String             $application     = 'downloads',
   String             $package_file    = undef,
   String             $package_uri     = undef,
   Boolean            $extract         = true,
@@ -80,7 +80,7 @@ class cloudfile (
     'windows' => 'C:/Windows/TEMP'
   }
 
-  $install_dir = "${temp_dir}/${application}${$package_name}"
+  $install_dir = "${temp_dir}/${application}/${$package_name}"
 
   include archive
 
