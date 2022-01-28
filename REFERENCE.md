@@ -27,12 +27,12 @@ that cannot use the `package` resource type.
 
 ```puppet
 class cloudfile {
-  app_name     => 'invader',
-  package_file => 'invader.tar.gz',
-  package_uri  => 's3://chrislorro',
-  extract      => true,
-  cloud_type   => local_s3,
-  aws_region   => eu-west-2,
+  app_name       => 'invader',
+  package_file   => 'invader.tar.gz',
+  package_uri    => 's3://chrislorro',
+  extract        => true,
+  cloud_download => standard,
+  aws_region     => eu-west-2,
 }
 ```
 
@@ -44,7 +44,7 @@ class cloudfile {
   package_file    => 'McAfee.zip',
   package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
   extract         => true,
-  cloud_type      => local_az,
+  cloud_download  => 'secure',
   token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
   package_name    => McAfee.exe,
   install_options => [ '/SILENT', '/INSTALL=AGENT']
@@ -59,7 +59,7 @@ The following parameters are available in the `cloudfile` class:
 * [`package_file`](#package_file)
 * [`package_uri`](#package_uri)
 * [`extract`](#extract)
-* [`cloud_type`](#cloud_type)
+* [`cloud_download`](#cloud_download)
 * [`package_name`](#package_name)
 * [`install_options`](#install_options)
 * [`token`](#token)
@@ -98,13 +98,17 @@ it defaults to true because we expect a compressed file
 
 Default value: ``true``
 
-##### <a name="cloud_type"></a>`cloud_type`
+##### <a name="cloud_download"></a>`cloud_download`
 
-Data type: `Enum[ 'local_az',
-        'local_s3',
-        'std_http' ]`
+Data type: `Enum[ 'standard',
+        'aws_s3',
+        'secure' ]`
 
 The cloud platform that is used to host the application package
+Accepts 3 different parametes:
+*- standard: standard download using http://URI https://URI
+*- aws_s3: Dowload using s3://URI and optional $install_options
+*- secure: Download using a secure token, must be used exclusive with token parameter
 
 Default value: ``undef``
 

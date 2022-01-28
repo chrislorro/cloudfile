@@ -2,89 +2,80 @@
 
 Welcome to your new module. A short overview of the generated parts can be found in the PDK documentation at https://puppet.com/pdk/latest/pdk_generating_modules.html .
 
-The README template below provides a starting point with details about what information to include in your README.
-
 #### Table of Contents
 
-1. [Description](#description)
-2. [Setup - The basics of getting started with cloudfile](#setup)
-    * [What cloudfile affects](#what-cloudfile-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with cloudfile](#beginning-with-cloudfile)
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Limitations - OS compatibility, etc.](#limitations)
-5. [Development - Guide for contributing to the module](#development)
+- [cloudfile](#cloudfile)
+      - [Table of Contents](#table-of-contents)
+  - [Description](#description)
+  - [Setup](#setup)
+    - [What cloudfile affects](#what-cloudfile-affects)
+    - [Setup Requirements **OPTIONAL**](#setup-requirements-optional)
+    - [Beginning with cloudfile](#beginning-with-cloudfile)
+  - [Usage](#usage)
+      - [Examples](#examples)
+        - [retrieve an application call invader from s3 storage to linux](#retrieve-an-application-call-invader-from-s3-storage-to-linux)
+        - [retrieve an application call invader from s3 storage and install the application](#retrieve-an-application-call-invader-from-s3-storage-and-install-the-application)
+  - [Limitations](#limitations)
+  - [Development](#development)
+  - [Release Notes/Contributors/Etc. **Optional**](#release-notescontributorsetc-optional)
+- [cloudfile](#cloudfile-1)
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your module does and what kind of problems users can solve with it.
-
-This should be a fairly short description helps the user decide if your module is what they want.
+Download archived packages from various locations and optionally install locally
 
 ## Setup
 
-### What cloudfile affects **OPTIONAL**
+This module is dependant on the archive module and also almost does the same, it has additional functionality for AWS CLI on windows platforms, and optional will use a package resource with optional install parameters
 
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
+### What cloudfile affects
 
-If there's more that they should know about, though, this is the place to mention:
-
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
-
+If using this module with AWS S3 bucket infrastructure the AWSCLI is automatically downloaded and install, for AZ filestore a token can be passed.
 ### Setup Requirements **OPTIONAL**
 
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
+Include `puppet/archive` and any dependencies
 
 ### Beginning with cloudfile
-
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
-
 ## Usage
+#### Examples
+##### retrieve an application call invader from s3 storage to linux
 
-Include usage examples for common use cases in the **Usage** section. Show your users how to use your module to solve problems, and be sure to include code examples. Include three to five examples of the most important or common tasks a user can accomplish with your module. Show users how to accomplish more complex tasks that involve different types, classes, and functions working in tandem.
-
-## Reference
-
-This section is deprecated. Instead, add reference information to your code as Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your module. For details on how to add code comments and generate documentation with Strings, see the Puppet Strings [documentation](https://puppet.com/docs/puppet/latest/puppet_strings.html) and [style guide](https://puppet.com/docs/puppet/latest/puppet_strings_style.html)
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the root of your module directory and list out each of your module's classes, defined types, facts, functions, Puppet tasks, task plans, and resource types and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-  * The data type, if applicable.
-  * A description of what the element does.
-  * Valid values, if the data type doesn't make it obvious.
-  * Default value, if any.
-
-For example:
-
+```puppet
+class cloudfile {
+  app_name       => 'invader',
+  package_file   => 'invader.tar.gz',
+  package_uri    => 's3://chrislorro',
+  extract        => true,
+  cloud_download => standard,
+  aws_region     => eu-west-2,
+}
 ```
-### `pet::cat`
+##### retrieve an application call invader from s3 storage and install the application
 
-#### Parameters
-
-##### `meow`
-
-Enables vocalization in your cat. Valid options: 'string'.
-
-Default: 'medium-loud'.
+```puppet
+class cloudfile {
+  app_name        => 'mcafee',
+  package_file    => 'McAfee.zip',
+  package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
+  extract         => true,
+  cloud_download  => 'secure',
+  token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
+  package_name    => McAfee.exe,
+  install_options => [ '/SILENT', '/INSTALL=AGENT']
+}
 ```
-
 ## Limitations
 
-In the Limitations section, list any incompatibilities, known issues, or other warnings.
+This is a beta version and is under development its been tested for downloading from AWS and Azure on Redhat, Centos, Windows 2016/2019. 
+
+This package install is in the early stages and will be improved during the next release
 
 ## Development
 
-In the Development section, tell other users the ground rules for contributing to your project and how they should submit their work.
+If you run into an issue with this module, or if you would like to request a feature, you can fork the repo and submit a PR, raise a bug or new feature request.
 
 ## Release Notes/Contributors/Etc. **Optional**
 
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.
+Coming soon
 # cloudfile
-# cloudfile
-# cloudfile
+

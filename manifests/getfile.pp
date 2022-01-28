@@ -16,7 +16,7 @@
 #   $ensure: default value true.
 #
 # @param $cloud_type
-#   $cloud_type: default value std_http
+#   $cloud_type: default value standard
 #
 # @param $access_key
 #   $access_key: optional param default undef
