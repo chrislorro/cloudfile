@@ -70,14 +70,14 @@ define cloudfile::getfile (
 
 
   $archive_params = $facts['kernel'] ? {
-    'Linux' => { path        => "${_extract_dir}/awscli-bundle.zip",
+    'Linux' => { path        => "${temp_dir}/awscli-bundle.zip",
                   source       => 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip',
                   extract      => true,
                   extract_path => '/opt',
                   creates      => '/opt/awscli-bundle/install',
                   cleanup      => true,
                 },
-    'windows'   => { path             => "${_extract_dir}/awscliv2.msi",
+    'windows'   => { path             => "${temp_dir}/awscliv2.msi",
                   source           => 'https://awscli.amazonaws.com/AWSCLIV2.msi',
                   creates          => 'C:/Program Files/Amazon/AWSCLIV2',
                   download_options => ['--region', $aws_region],
@@ -93,7 +93,7 @@ define cloudfile::getfile (
 
     package { 'AWS Command Line Interface v2':
       ensure          => 'installed',
-      source          => 'C:/Windows/TEMP/invader/awscliv2.msi',
+      source          => 'C:/Windows/TEMP/awscliv2.msi',
       install_options => [ '/qn'],
       require         => Archive['Get AWS CLI'],
       notify          => Archive[$_pkg_inst]

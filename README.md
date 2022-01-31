@@ -36,6 +36,8 @@ If using this module with AWS S3 bucket infrastructure the AWSCLI is automatical
 Include `puppet/archive` and any dependencies
 
 ### Beginning with cloudfile
+
+The Linux system must have python configured for the AWSCLI installer to work
 ## Usage
 #### Examples
 ##### retrieve an application call invader from s3 storage to linux
