@@ -97,6 +97,10 @@ class cloudfile (
 
   if $install_package {
 
+  if !defined('$package_name') {
+    fail('required $package_name not passed')
+  }
+
     case $facts['kernel'] {
       'windows': {
         package { $package_name:
