@@ -114,6 +114,7 @@ define cloudfile::getfile (
       content => epp('cloudfile/awsconfig.pp'),
       before  => Class['archive'],
     }
+  }
 
 #    exec { 'install_aws_cli':
 #      cwd     => '/opt/awscli-bundle',
