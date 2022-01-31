@@ -107,6 +107,14 @@ define cloudfile::getfile (
       notify          => Archive[$_pkg_inst]
     }
 
+    file { '/root/.aws/config':
+      ensure  => file,
+      mode    => '0640',
+      owner   => root,
+      content => epp('cloudfile/awsconfig.pp'),
+      before  => Class['archive'],
+    }
+
 #    exec { 'install_aws_cli':
 #      cwd     => '/opt/awscli-bundle',
 #      command => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
