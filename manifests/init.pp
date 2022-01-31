@@ -74,7 +74,6 @@ class cloudfile (
   Enum[ 'standard',
         'aws_s3',
         'secure' ]   $cloud_download  = undef,
-  Optional[String]   $package_name    = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
   Optional[String]   $install_file    = undef,
