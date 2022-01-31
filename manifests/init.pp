@@ -92,12 +92,12 @@ class cloudfile (
   include archive
 
   cloudfile::getfile { $package_file:
-    pkg_uri    => $package_uri,
-    app_name   => $application,
-    extract    => $extract,
-    access_key => $token,
-    cloud_type => $cloud_download,
-    aws_region => $aws_region,
+    package_uri => $package_uri,
+    application => $application,
+    extract     => $extract,
+    access_key  => $token,
+    cloud_type  => $cloud_download,
+    aws_region  => $aws_region,
   }
 
   if $install_package {
@@ -127,6 +127,7 @@ class cloudfile (
           refreshonly => true,
           path        => $install_dir,
           timeout     => '300',
+          require     => Cloudfile::Getfile[$package_file]
         }
       }
       default: {}

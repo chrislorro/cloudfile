@@ -3,11 +3,11 @@
 # == Definition: cloudfile::getfile
 #
 # Parameters:
-# @param pkg_uri
-#   $pkg_uri: $package_uri
+# @param package_uri
+#   $package_uri: $package_uri
 #
-# @param $app_name
-#   $app_name: $application
+# @param $application
+#   $application: $application
 #
 # @param $extract
 #   $extract: default value true.
@@ -25,24 +25,24 @@
 #   $aws_region: optional param default is undef
 #
 #  cloudfile::getfile { 'mycloudapp.2.0.tar.gz':
-#    app_name   => 'mycloudapp',
-#    cloud_type => 'azure',
-#    access_key => '<azure token key>'
-#    pkg_uri    => 'http://clouduri/blob/distro/v2.0',
+#    application => 'mycloudapp',
+#    cloud_type  => 'azure',
+#    access_key  => '<azure token key>'
+#    package_uri => 'http://clouduri/blob/distro/v2.0',
 #  }
 #
 # Example usage:
 #  cloudfile::getfile { 'mycloudapp.2.0.tar.gz':
-#    app_name   => 'mycloudapp',
-#    cloud_type => 'aws',
-#    extract    => false,
-#    pkg_uri    => 'http://clouduri/blob/distro/v2.0',
-#    aws_region => 'eu-west2',
+#    application => 'mycloudapp',
+#    cloud_type  => 'aws',
+#    extract     => false,
+#    package_uri => 'http://clouduri/blob/distro/v2.0',
+#    aws_region  => 'eu-west2',
 #  }
 define cloudfile::getfile (
 
-  String                    $pkg_uri      = $package_uri,
-  String                    $app_name     = $application,
+  String                    $package_uri  = $package_uri,
+  String                    $application  = $application,
   Boolean                   $extract      = true,
   Enum['present', 'absent'] $ensure       = present,
   String                    $cloud_type   = undef,
@@ -56,12 +56,12 @@ define cloudfile::getfile (
     'windows' => 'C:/Windows/TEMP'
   }
 
-  $_extract_dir = "${temp_dir}/${app_name}"
+  $_extract_dir = "${temp_dir}/${application}"
   $_pkg_inst    = "${_extract_dir}/${title}"
 
   $_pkg_src_uri = $cloud_type ? {
-    default   => "${pkg_uri}/${title}",
-    'secure' => "${pkg_uri}/${title}?${access_key}",
+    default   => "${package_uri}/${title}",
+    'secure' => "${package_uri}/${title}?${access_key}",
   }
 
   file { $_extract_dir:
