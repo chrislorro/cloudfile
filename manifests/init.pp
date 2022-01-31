@@ -97,13 +97,13 @@ class cloudfile (
 
   if $install_package {
 
-  if !defined($package_name) {
+  if !defined($application) {
     fail('required $package_name not passed')
   }
 
     case $facts['kernel'] {
       'windows': {
-        package { $package_name:
+        package { $application:
           ensure          => 'installed',
           source          => $install_dir,
           install_options => $install_options,
