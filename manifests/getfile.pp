@@ -101,14 +101,20 @@ define cloudfile::getfile (
 
   } else {
 
-    exec { 'install_aws_cli':
-      cwd     => '/opt/awscli-bundle',
-      command => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
-      creates => '/usr/local/bin/aws',
-      require => Archive['Get AWS CLI'],
-      notify  => Archive[$_pkg_inst]
+    class { 'archive':
+      aws_cli_install => true,
+      require         => Archive['Get AWS CLI'],
+      notify          => Archive[$_pkg_inst]
     }
-  }
+
+#    exec { 'install_aws_cli':
+#      cwd     => '/opt/awscli-bundle',
+#      command => '/opt/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws',
+#      creates => '/usr/local/bin/aws',
+#      require => Archive['Get AWS CLI'],
+#      notify  => Archive[$_pkg_inst]
+#    }
+#  }
 
   $download_options = $cloud_type ? {
     aws_s3 => ['--region', $aws_region, '--no-sign-request'],
