@@ -102,7 +102,7 @@ class cloudfile (
 
   if $install_package {
 
-  if !defined($application) {
+  if ! $application {
     fail('required $application not passed')
   }
 
