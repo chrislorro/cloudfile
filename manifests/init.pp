@@ -121,7 +121,7 @@ class cloudfile (
           fail('required $installer not passed')
         }
 
-        $_install_command = "${install_dir}/${installer} ${install_options}"
+        $_install_command = "${temp_dir}/${application}/${installer} ${install_options}"
         exec { $application:
           command     =>  $_install_command,
           refreshonly => true,
