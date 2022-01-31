@@ -65,7 +65,7 @@
 #     install_options => [ '/SILENT', '/INSTALL=AGENT']
 #   }
 class cloudfile (
-  String             $application     = 'downloads',
+  String             $application     = undef,
   String             $package_file    = undef,
   String             $package_uri     = undef,
   Boolean            $extract         = true,
@@ -103,7 +103,7 @@ class cloudfile (
   if $install_package {
 
   if !defined($application) {
-    fail('required $package_name not passed')
+    fail('required $application not passed')
   }
 
     case $facts['kernel'] {
