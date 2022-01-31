@@ -64,14 +64,17 @@ The following parameters are available in the `cloudfile` class:
 * [`install_options`](#install_options)
 * [`token`](#token)
 * [`aws_region`](#aws_region)
+* [`installer`](#installer)
+* [`install_package`](#install_package)
 
 ##### <a name="application"></a>`application`
 
 Data type: `String`
 
-The application name that is being installed
+The application name that is being installed, use the exact application
+string for windows so that the package resource runs idempotent
 
-Default value: ``undef``
+Default value: `'downloads'`
 
 ##### <a name="package_file"></a>`package_file`
 
@@ -98,14 +101,6 @@ it defaults to true because we expect a compressed file
 
 Default value: ``true``
 
-##### <a name="install_package"></a>`extract`
-
-Data type: `Boolean`
-
-set this parameter to install the package from an archive file,
-it defaults to false because a package installation may not be required
-
-Default value: ``false``
 ##### <a name="cloud_download"></a>`cloud_download`
 
 Data type: `Enum[ 'standard',
@@ -153,6 +148,22 @@ Optional parameter for the AWS region, if this is not set for,
 windows agents the package uses a default deployed with the sdk
 
 Default value: ``undef``
+
+##### <a name="installer"></a>`installer`
+
+Data type: `Optional[String]`
+
+Optional paramter for executing install scripts on Linux only
+
+Default value: ``undef``
+
+##### <a name="install_package"></a>`install_package`
+
+Data type: `Boolean`
+
+
+
+Default value: ``false``
 
 ## Defined types
 
@@ -215,7 +226,7 @@ $extract: default value true.
 
 ##### <a name="$cloud_type"></a>`$cloud_type`
 
-$cloud_type: default value std_http
+$cloud_type: default value standard
 
 ##### <a name="$access_key"></a>`$access_key`
 

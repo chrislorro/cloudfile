@@ -6,7 +6,8 @@
 # that cannot use the `package` resource type.
 #
 # @param application
-#   The application name that is being installed
+#   The application name that is being installed, use the exact application
+#   string for windows so that the package resource runs idempotent
 #
 # @param package_file
 #   The package name that will be downloaded from cloud storage
@@ -75,7 +76,7 @@ class cloudfile (
   Optional[String]   $package_name    = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
-  Optional[Stirng]   $installer       = undef,
+  Optional[String]   $installer       = undef,
   Optional[Array]    $install_options = undef,
 
 
@@ -120,8 +121,9 @@ class cloudfile (
           fail('required $installer not passed')
         }
 
+        $_install_command = "${install_dir}/${installer} ${install_options}"
         exec { $application:
-          command     => "${install_dir}/${installer} ${install_options}",
+          command     =>  $_install_command,
           refreshonly => true,
           path        => $install_dir,
           timeout     => '300',
