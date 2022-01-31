@@ -37,7 +37,7 @@ Include `puppet/archive` and any dependencies
 
 ### Beginning with cloudfile
 
-The Linux system must have python configured for the AWSCLI installer to work
+The Linux system must have python configured for the AWSCLI installer to work, and the .bash_profile will need the /usr/local/bin set in $PATH.
 ## Usage
 #### Examples
 ##### retrieve an application call invader from s3 storage to linux

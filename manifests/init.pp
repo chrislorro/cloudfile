@@ -65,6 +65,7 @@ class cloudfile (
   String             $package_file    = undef,
   String             $package_uri     = undef,
   Boolean            $extract         = true,
+  Boolean            $install_package = false,
   Enum[ 'standard',
         'aws_s3',
         'secure' ]   $cloud_download  = undef,
@@ -72,6 +73,7 @@ class cloudfile (
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
   Optional[Array]    $install_options = undef,
+
 
 ) {
 
@@ -93,12 +95,18 @@ class cloudfile (
     aws_region => $aws_region,
   }
 
-  if $package_name {
-    package { $package_name:
-      ensure          => 'installed',
-      source          => $install_dir,
-      install_options => $install_options,
-      require         => Cloudfile::Getfile[$package_file]
+  if $install_package {
+
+    case $facts['kernel'] {
+      'windows': {
+        package { $package_name:
+          ensure          => 'installed',
+          source          => $install_dir,
+          install_options => $install_options,
+          require         => Cloudfile::Getfile[$package_file]
+        }
+      }
+      default: {}
     }
   }
 }

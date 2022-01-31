@@ -98,6 +98,14 @@ it defaults to true because we expect a compressed file
 
 Default value: ``true``
 
+##### <a name="install_package"></a>`extract`
+
+Data type: `Boolean`
+
+set this parameter to install the package from an archive file,
+it defaults to false because a package installation may not be required
+
+Default value: ``false``
 ##### <a name="cloud_download"></a>`cloud_download`
 
 Data type: `Enum[ 'standard',
