@@ -31,13 +31,13 @@
 #    package_uri => 'http://clouduri/blob/distro/v2.0',
 #  }
 #
-# Example usage:
-#  cloudfile::getfile { 'mycloudapp.2.0.tar.gz':
-#    application => 'mycloudapp',
-#    cloud_type  => 'aws',
-#    extract     => false,
-#    package_uri => 'http://clouduri/blob/distro/v2.0',
-#    aws_region  => 'eu-west2',
+# Example usage AWS windows installation:
+#  cloudfile::getfile { 'putty-64bit-0.76-installer.msi.zip':
+#    application => 'PuTTY release 0.76 (64-bit)',
+#    cloud_download => 'aws_s3',
+#    extract        => true,
+#    package_uri    => 's3://chrislorro',
+#    aws_region     => 'eu-west2',
 #  }
 define cloudfile::getfile (
 
