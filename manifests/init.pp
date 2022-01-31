@@ -39,6 +39,9 @@
 #   Optional parameter for the AWS region, if this is not set for,
 #   windows agents the package uses a default deployed with the sdk
 #
+# @param installer
+#   Optional paramter for executing install scripts on Linux only
+#
 # @example retrieve an application call invader from s3 storage to linux
 #   class cloudfile {
 #     app_name       => 'invader',
@@ -72,6 +75,7 @@ class cloudfile (
   Optional[String]   $package_name    = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
+  Optional[Stirng]   $installer       = undef,
   Optional[Array]    $install_options = undef,
 
 
@@ -108,6 +112,19 @@ class cloudfile (
           source          => $install_dir,
           install_options => $install_options,
           require         => Cloudfile::Getfile[$package_file]
+        }
+      }
+      'Linux': {
+
+        if !defined($installer) {
+          fail('required $installer not passed')
+        }
+
+        exec { $application:
+          command     => "${install_dir}/${installer} ${install_options}",
+          refreshonly => true,
+          path        => $install_dir,
+          timeout     => '300',
         }
       }
       default: {}
