@@ -103,7 +103,7 @@ define cloudfile::getfile (
 
     class { 'archive':
       aws_cli_install => true,
-      require         => Archive['Get AWS CLI'],
+#      require         => Archive['Get AWS CLI'],
       notify          => Archive[$_pkg_inst]
     }
 
