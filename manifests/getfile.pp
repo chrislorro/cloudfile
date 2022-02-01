@@ -84,12 +84,12 @@ define cloudfile::getfile (
                 }
   }
 
+  if $facts['osfamily'] == 'windows' {
+
   archive { 'Get AWS CLI':
     ensure => present,
     *      => $archive_params,
   }
-
-  if $facts['osfamily'] == 'windows' {
 
     package { 'AWS Command Line Interface v2':
       ensure          => 'installed',
