@@ -43,6 +43,7 @@
 # @param installer
 #   Optional paramter for executing install scripts on Linux only
 #
+#
 # @example retrieve an application call invader from s3 storage to linux
 #   class { 'cloudfile':
 #     application    => 'invader',
@@ -65,7 +66,7 @@
 #     install_file    => McAfee.exe,
 #     install_options => [ '/SILENT', '/INSTALL=AGENT']
 #   }
-class cloudfile (
+class cloudfile::getfile (
   String             $application     = undef,
   String             $package_file    = undef,
   String             $package_uri     = undef,
@@ -86,22 +87,61 @@ class cloudfile (
     'windows' => 'C:/Windows/TEMP'
   }
 
-  cloudfile::getfile { $package_file:
-    package_uri => $package_uri,
-    application => $application,
-    extract     => $extract,
-    access_key  => $token,
-    cloud_type  => $cloud_download,
-    aws_region  => $aws_region,
+  $_extract_dir = "${temp_dir}/${application}"
+  $_pkg_inst    = "${_extract_dir}/${title}"
+
+  $_pkg_src_uri = $cloud_download ? {
+    default   => "${package_uri}/${title}",
+    'secure' => "${package_uri}/${title}?${token}",
+  }
+
+  if $facts['osfamily'] == 'windows' {
+
+    archive { 'Get AWS CLI':
+      ensure           => present,
+      source           => 'https://awscli.amazonaws.com/AWSCLIV2.msi',
+      creates          => 'C:/Program Files/Amazon/AWSCLIV2',
+      download_options => ['--region', $aws_region],
+    }
+
+    package { 'AWS Command Line Interface v2':
+      ensure          => 'installed',
+      source          => 'C:/Windows/TEMP/awscliv2.msi',
+      install_options => [ '/qn'],
+      require         => Archive['Get AWS CLI'],
+      notify          => Archive[$_pkg_inst]
+    }
+
+  } else {
+
+    class { 'archive':
+      aws_cli_install => true,
+      notify          => Archive[$_pkg_inst]
+    }
+  }
+
+  $download_options = $cloud_download ? {
+    aws_s3 => ['--region', $aws_region, '--no-sign-request'],
+    default  => undef,
+  }
+
+  archive { $_pkg_inst:
+    ensure           => present,
+    extract          => $extract,
+    source           => $_pkg_src_uri,
+    extract_path     => $_extract_dir,
+    creates          => $_pkg_inst,
+    cleanup          => false,
+    download_options => $download_options,
   }
 
   if $install_package {
 
-  if ! $application {
-    fail('required $application not passed')
-  }
+    if ! $application {
+      fail('required $application not passed')
+    }
 
-  $installer = "${temp_dir}/${application}/${$install_file}"
+    $installer = "${temp_dir}/${application}/${$install_file}"
 
     case $facts['kernel'] {
       'windows': {
@@ -109,7 +149,7 @@ class cloudfile (
           ensure          => 'installed',
           source          => $installer,
           install_options => $install_options,
-          require         => Cloudfile::Getfile[$package_file]
+          require         => Ardchive[$_pkg_inst]
         }
       }
       'Linux': {
@@ -124,7 +164,7 @@ class cloudfile (
           refreshonly => true,
           path        => $_install_command,
           timeout     => '300',
-          require     => Cloudfile::Getfile[$package_file]
+          require     => Ardchive[$_pkg_inst]
         }
       }
       default: {}
