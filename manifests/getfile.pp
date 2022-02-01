@@ -97,6 +97,8 @@ define cloudfile::getfile (
 
   if $facts['osfamily'] == 'windows' {
 
+    include archive
+
     archive { 'Get AWS CLI':
       ensure           => present,
       source           => 'https://awscli.amazonaws.com/AWSCLIV2.msi',
