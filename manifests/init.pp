@@ -87,11 +87,11 @@ class cloudfile (
     package_uri     => $package_uri,
     application     => $application,
     extract         => $extract,
-    access_key      => $token,
-    cloud_type      => $cloud_download,
+    token           => $token,
+    cloud_download  => $cloud_download,
     aws_region      => $aws_region,
     install_package => $install_package,
-    installer_exe    => $installer_exe,
+    installer_exe   => $installer_exe,
     install_options => $install_options,
   }
 }
