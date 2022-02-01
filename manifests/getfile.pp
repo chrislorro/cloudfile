@@ -68,7 +68,6 @@
 #   }
 define cloudfile::getfile (
   String             $application     = undef,
-  String             $package_file    = $title,
   String             $package_uri     = undef,
   Boolean            $extract         = true,
   Boolean            $install_package = false,
@@ -88,11 +87,11 @@ define cloudfile::getfile (
   }
 
   $_extract_dir = "${temp_dir}/${application}"
-  $_pkg_inst    = "${_extract_dir}/${package_file}"
+  $_pkg_inst    = "${_extract_dir}/${title}"
 
   $_pkg_src_uri = $cloud_download ? {
-    default   => "${package_uri}/${package_file}",
-    'secure' => "${package_uri}/${package_file}?${token}",
+    default   => "${package_uri}/${title}",
+    'secure' => "${package_uri}/${title}?${token}",
   }
 
   if $facts['osfamily'] == 'windows' {

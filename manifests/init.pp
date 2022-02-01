@@ -66,7 +66,7 @@
 #     install_file    => McAfee.exe,
 #     install_options => [ '/SILENT', '/INSTALL=AGENT']
 #   }
-define cloudfile::getfile (
+class cloudfile (
   String             $application     = undef,
   String             $package_file    = undef,
   String             $package_uri     = undef,
@@ -82,11 +82,14 @@ define cloudfile::getfile (
 ) {
 
   cloudfile::getfile { $package_file:
-    package_uri => $package_uri,
-    application => $application,
-    extract     => $extract,
-    access_key  => $token,
-    cloud_type  => $cloud_download,
-    aws_region  => $aws_region,
+    package_uri     => $package_uri,
+    application     => $application,
+    extract         => $extract,
+    access_key      => $token,
+    cloud_type      => $cloud_download,
+    aws_region      => $aws_region,
+    install_package => $install_package,
+    install_file    => $install_file,
+    install_options => $install_options,
   }
 }
