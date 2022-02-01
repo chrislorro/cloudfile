@@ -45,7 +45,7 @@ The Linux system must have python configured for the AWSCLI installer to work, a
 ```puppet
 class cloudfile {
   app_name       => 'invader',
-  package_file   => 'invader.tar.gz',
+  package_name   => 'invader.tar.gz',
   package_uri    => 's3://chrislorro',
   extract        => true,
   cloud_download => standard,
@@ -57,7 +57,7 @@ class cloudfile {
 ```puppet
 class cloudfile {
   app_name        => 'mcafee',
-  package_file    => 'McAfee.zip',
+  package_name    => 'McAfee.zip',
   package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
   extract         => true,
   cloud_download  => 'secure',

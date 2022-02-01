@@ -28,7 +28,7 @@ that cannot use the `package` resource type.
 ```puppet
 class cloudfile {
   app_name       => 'invader',
-  package_file   => 'invader.tar.gz',
+  package_name   => 'invader.tar.gz',
   package_uri    => 's3://chrislorro',
   extract        => true,
   cloud_download => standard,
@@ -41,7 +41,7 @@ class cloudfile {
 ```puppet
 class cloudfile {
   app_name        => 'mcafee',
-  package_file    => 'McAfee.zip',
+  package_name    => 'McAfee.zip',
   package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
   extract         => true,
   cloud_download  => 'secure',
@@ -56,7 +56,7 @@ class cloudfile {
 The following parameters are available in the `cloudfile` class:
 
 * [`application`](#application)
-* [`package_file`](#package_file)
+* [`package_name`](#package_name)
 * [`package_uri`](#package_uri)
 * [`extract`](#extract)
 * [`cloud_download`](#cloud_download)
@@ -76,7 +76,7 @@ string for windows so that the package resource runs idempotent
 
 Default value: `'downloads'`
 
-##### <a name="package_file"></a>`package_file`
+##### <a name="package_name"></a>`package_name`
 
 Data type: `String`
 

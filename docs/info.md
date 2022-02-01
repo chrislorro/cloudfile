@@ -28,7 +28,7 @@ that cannot use the `package` resource type.
 ```puppet
 class { 'cloudfile':
   application    => 'invader',
-  package_file   => 'invader.tar.gz',
+  package_name   => 'invader.tar.gz',
   package_uri    => 's3://chrislorro',
   extract        => true,
   cloud_download => aws_s3,
@@ -41,7 +41,7 @@ class { 'cloudfile':
 ```puppet
 class { 'cloudfile':
   application     => 'mcafee',
-  package_file    => 'McAfee.zip',
+  package_name    => 'McAfee.zip',
   package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
   extract         => true,
   cloud_download  => 'secure',
@@ -58,7 +58,7 @@ The following parameters are available in the `cloudfile` class:
 
 * [`application`](#application)
 * [`install_package`](#install_package)
-* [`package_file`](#package_file)
+* [`package_name`](#package_name)
 * [`package_uri`](#package_uri)
 * [`extract`](#extract)
 * [`cloud_download`](#cloud_download)
@@ -85,7 +85,7 @@ Boolean true or false to install the extracted package
 
 Default value: ``false``
 
-##### <a name="package_file"></a>`package_file`
+##### <a name="package_name"></a>`package_name`
 
 Data type: `String`
 
@@ -207,7 +207,7 @@ cloudfile::getfile { 'McAfee.zip':
 The following parameters are available in the `cloudfile::getfile` defined type:
 
 * [`application`](#application)
-* [`package_file`](#package_file)
+* [`package_name`](#package_name)
 * [`package_uri`](#package_uri)
 * [`extract`](#extract)
 * [`cloud_download`](#cloud_download)
@@ -227,7 +227,7 @@ string for windows so that the package resource runs idempotent
 
 Default value: ``undef``
 
-##### <a name="package_file"></a>`package_file`
+##### <a name="package_name"></a>`package_name`
 
 The package name that will be downloaded from cloud storage
 

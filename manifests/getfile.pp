@@ -9,7 +9,7 @@
 #   The application name that is being installed, use the exact application
 #   string for windows so that the package resource runs idempotent
 #
-# @param package_file
+# @param package_name
 #   The package name that will be downloaded from cloud storage
 #
 # @param package_uri

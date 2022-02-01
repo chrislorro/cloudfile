@@ -12,7 +12,7 @@
 # @param install_package
 #   Boolean true or false to install the extracted package
 #
-# @param package_file
+# @param package_name
 #   The package name that will be downloaded from cloud storage
 #
 # @param package_uri
@@ -49,7 +49,7 @@
 # @example retrieve an application call invader from s3 storage to linux
 #   class { 'cloudfile':
 #     application    => 'invader',
-#     package_file   => 'invader.tar.gz',
+#     package_name   => 'invader.tar.gz',
 #     package_uri    => 's3://chrislorro',
 #     extract        => true,
 #     cloud_download => aws_s3,
@@ -59,7 +59,7 @@
 # @example retrieve an application call invader from s3 storage and install the application
 #   class { 'cloudfile': 
 #     application     => 'mcafee',
-#     package_file    => 'McAfee.zip',
+#     package_name    => 'McAfee.zip',
 #     package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
 #     extract         => true,
 #     cloud_download  => 'secure',
@@ -70,7 +70,7 @@
 #   }
 class cloudfile (
   String             $application     = undef,
-  String             $package_file    = undef,
+  String             $package_name    = undef,
   String             $package_uri     = undef,
   Boolean            $extract         = true,
   Boolean            $install_package = false,
@@ -83,7 +83,7 @@ class cloudfile (
   Optional[Array]    $install_options = undef,
 ) {
 
-  cloudfile::getfile { $package_file:
+  cloudfile::getfile { $package_name:
     package_uri     => $package_uri,
     application     => $application,
     extract         => $extract,
