@@ -29,7 +29,7 @@
 # @param install_package
 #   Boolean true or false to install the extracted package
 #
-# @param install_file
+# @param installer_exe
 #   Optional parameter to install the package (this option will be enhanced in the next release)
 #
 # @param install_options
@@ -54,7 +54,7 @@
 #    package_uri     => 's3://chrislorro',
 #    aws_region      => 'eu-west2',
 #    install_package => true,
-#    $install_file   => putty-64bit-0.76-installer.msi,
+#    $installer_exe   => putty-64bit-0.76-installer.msi,
 #  }
 #
 # @example retrieve an application call McAfee from AZ storage and install the application
@@ -65,7 +65,7 @@
 #     cloud_download  => 'secure',
 #     install_package => true,
 #     token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
-#     install_file    => McAfee.exe,
+#     installer_exe    => McAfee.exe,
 #     install_options => [ '/SILENT', '/INSTALL=AGENT']
 #   }
 define cloudfile::getfile (
@@ -78,7 +78,7 @@ define cloudfile::getfile (
         'secure' ]   $cloud_download  = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
-  Optional[String]   $install_file    = undef,
+  Optional[String]   $installer_exe    = undef,
   Optional[Array]    $install_options = undef,
 
 ) {
@@ -144,7 +144,7 @@ define cloudfile::getfile (
       fail('required $application not passed')
     }
 
-    $installer = "${temp_dir}/${application}/${$install_file}"
+    $installer = "${temp_dir}/${application}/${$installer_exe}"
 
     case $facts['kernel'] {
       'windows': {

@@ -47,7 +47,7 @@ class { 'cloudfile':
   cloud_download  => 'secure',
   install_package => true,
   token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
-  install_file    => McAfee.exe,
+  installer_exe    => McAfee.exe,
   install_options => [ '/SILENT', '/INSTALL=AGENT']
 }
 ```
@@ -62,7 +62,7 @@ The following parameters are available in the `cloudfile` class:
 * [`package_uri`](#package_uri)
 * [`extract`](#extract)
 * [`cloud_download`](#cloud_download)
-* [`install_file`](#install_file)
+* [`installer_exe`](#installer_exe)
 * [`install_options`](#install_options)
 * [`token`](#token)
 * [`aws_region`](#aws_region)
@@ -124,7 +124,7 @@ Accepts 3 different parametes:
 
 Default value: ``undef``
 
-##### <a name="install_file"></a>`install_file`
+##### <a name="installer_exe"></a>`installer_exe`
 
 Data type: `Optional[String]`
 
@@ -183,7 +183,7 @@ cloudfile::getfile { 'putty-64bit-0.76-installer.msi.zip':
   package_uri     => 's3://chrislorro',
   aws_region      => 'eu-west2',
   install_package => true,
-  $install_file   => putty-64bit-0.76-installer.msi,
+  $installer_exe   => putty-64bit-0.76-installer.msi,
 }
 ```
 
@@ -197,7 +197,7 @@ cloudfile::getfile { 'McAfee.zip':
   cloud_download  => 'secure',
   install_package => true,
   token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
-  install_file    => McAfee.exe,
+  installer_exe    => McAfee.exe,
   install_options => [ '/SILENT', '/INSTALL=AGENT']
 }
 ```
@@ -212,7 +212,7 @@ The following parameters are available in the `cloudfile::getfile` defined type:
 * [`extract`](#extract)
 * [`cloud_download`](#cloud_download)
 * [`install_package`](#install_package)
-* [`install_file`](#install_file)
+* [`installer_exe`](#installer_exe)
 * [`install_options`](#install_options)
 * [`token`](#token)
 * [`aws_region`](#aws_region)
@@ -270,7 +270,7 @@ Boolean true or false to install the extracted package
 
 Default value: ``false``
 
-##### <a name="install_file"></a>`install_file`
+##### <a name="installer_exe"></a>`installer_exe`
 
 Data type: `Optional[String]`
 

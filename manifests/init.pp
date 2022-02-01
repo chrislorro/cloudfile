@@ -29,7 +29,7 @@
 #   *- aws_s3: Dowload using s3://URI and optional $install_options
 #   *- secure: Download using a secure token, must be used exclusive with token parameter
 #
-# @param install_file
+# @param installer_exe
 #   Optional parameter to install the package (this option will be enhanced in the next release)
 #
 # @param install_options
@@ -65,7 +65,7 @@
 #     cloud_download  => 'secure',
 #     install_package => true,
 #     token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
-#     install_file    => McAfee.exe,
+#     installer_exe    => McAfee.exe,
 #     install_options => [ '/SILENT', '/INSTALL=AGENT']
 #   }
 class cloudfile (
@@ -79,7 +79,7 @@ class cloudfile (
         'secure' ]   $cloud_download  = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
-  Optional[String]   $install_file    = undef,
+  Optional[String]   $installer_exe    = undef,
   Optional[Array]    $install_options = undef,
 ) {
 
@@ -91,7 +91,7 @@ class cloudfile (
     cloud_type      => $cloud_download,
     aws_region      => $aws_region,
     install_package => $install_package,
-    install_file    => $install_file,
+    installer_exe    => $installer_exe,
     install_options => $install_options,
   }
 }
