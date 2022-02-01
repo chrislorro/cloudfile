@@ -26,6 +26,9 @@
 #   *- aws_s3: Dowload using s3://URI and optional $install_options
 #   *- secure: Download using a secure token, must be used exclusive with token parameter
 #
+# @param install_package
+#   Boolean true or false to install the extracted package
+#
 # @param install_file
 #   Optional parameter to install the package (this option will be enhanced in the next release)
 #
@@ -43,8 +46,7 @@
 # @param installer
 #   Optional paramter for executing install scripts on Linux only
 #
-#
-# Example usage AWS windows installation:
+# @example usage AWS windows installation:
 #  cloudfile::getfile { 'putty-64bit-0.76-installer.msi.zip':
 #    application     => 'PuTTY release 0.76 (64-bit)',
 #    cloud_download  => 'aws_s3',

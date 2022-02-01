@@ -9,6 +9,9 @@
 #   The application name that is being installed, use the exact application
 #   string for windows so that the package resource runs idempotent
 #
+# @param install_package
+#   Boolean true or false to install the extracted package
+#
 # @param package_file
 #   The package name that will be downloaded from cloud storage
 #
@@ -43,21 +46,20 @@
 # @param installer
 #   Optional paramter for executing install scripts on Linux only
 #
+# @example retrieve an application call invader from s3 storage to linux
+#   class { 'cloudfile':
+#     application    => 'invader',
+#     package_file   => 'invader.tar.gz',
+#     package_uri    => 's3://chrislorro',
+#     extract        => true,
+#     cloud_download => aws_s3,
+#     aws_region     => eu-west-2,
+#   }
 #
-# Example usage AWS windows installation:
-#  cloudfile::getfile { 'putty-64bit-0.76-installer.msi.zip':
-#    application     => 'PuTTY release 0.76 (64-bit)',
-#    cloud_download  => 'aws_s3',
-#    extract         => true,
-#    package_uri     => 's3://chrislorro',
-#    aws_region      => 'eu-west2',
-#    install_package => true,
-#    $install_file   => putty-64bit-0.76-installer.msi,
-#  }
-#
-# @example retrieve an application call McAfee from AZ storage and install the application
-#   cloudfile::getfile { 'McAfee.zip': 
+# @example retrieve an application call invader from s3 storage and install the application
+#   class { 'cloudfile': 
 #     application     => 'mcafee',
+#     package_file    => 'McAfee.zip',
 #     package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
 #     extract         => true,
 #     cloud_download  => 'secure',
