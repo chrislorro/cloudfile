@@ -10,7 +10,7 @@
 
 ### Defined types
 
-* [`cloudfile::getfile`](#cloudfilegetfile): Accepts parameters for downloadind and extracting files.
+* [`cloudfile::getfile`](#cloudfilegetfile): Download archived packages from various locations and optionally local install.
 
 ## Classes
 
@@ -26,12 +26,12 @@ that cannot use the `package` resource type.
 ##### retrieve an application call invader from s3 storage to linux
 
 ```puppet
-class cloudfile {
-  app_name       => 'invader',
+class { 'cloudfile':
+  application    => 'invader',
   package_name   => 'invader.tar.gz',
   package_uri    => 's3://chrislorro',
   extract        => true,
-  cloud_download => standard,
+  cloud_download => aws_s3,
   aws_region     => eu-west-2,
 }
 ```
@@ -39,14 +39,15 @@ class cloudfile {
 ##### retrieve an application call invader from s3 storage and install the application
 
 ```puppet
-class cloudfile {
-  app_name        => 'mcafee',
+class { 'cloudfile':
+  application     => 'mcafee',
   package_name    => 'McAfee.zip',
   package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
   extract         => true,
   cloud_download  => 'secure',
+  install_package => true,
   token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
-  package_name    => McAfee.exe,
+  installer_exe    => McAfee.exe,
   install_options => [ '/SILENT', '/INSTALL=AGENT']
 }
 ```
@@ -56,16 +57,16 @@ class cloudfile {
 The following parameters are available in the `cloudfile` class:
 
 * [`application`](#application)
+* [`install_package`](#install_package)
 * [`package_name`](#package_name)
 * [`package_uri`](#package_uri)
 * [`extract`](#extract)
 * [`cloud_download`](#cloud_download)
-* [`package_name`](#package_name)
+* [`installer_exe`](#installer_exe)
 * [`install_options`](#install_options)
 * [`token`](#token)
 * [`aws_region`](#aws_region)
 * [`installer`](#installer)
-* [`install_package`](#install_package)
 
 ##### <a name="application"></a>`application`
 
@@ -74,7 +75,15 @@ Data type: `String`
 The application name that is being installed, use the exact application
 string for windows so that the package resource runs idempotent
 
-Default value: `'downloads'`
+Default value: ``undef``
+
+##### <a name="install_package"></a>`install_package`
+
+Data type: `Boolean`
+
+Boolean true or false to install the extracted package
+
+Default value: ``false``
 
 ##### <a name="package_name"></a>`package_name`
 
@@ -115,7 +124,7 @@ Accepts 3 different parametes:
 
 Default value: ``undef``
 
-##### <a name="package_name"></a>`package_name`
+##### <a name="installer_exe"></a>`installer_exe`
 
 Data type: `Optional[String]`
 
@@ -151,9 +160,105 @@ Default value: ``undef``
 
 ##### <a name="installer"></a>`installer`
 
-Data type: `Optional[String]`
-
 Optional paramter for executing install scripts on Linux only
+
+## Defined types
+
+### <a name="cloudfilegetfile"></a>`cloudfile::getfile`
+
+A module to download application files from cloud filestores or http/https hosted packages,
+currently compatable with AWS and Azure cloud providers. Package installation features will
+ be added in future releases, including running a template to install custom applications
+that cannot use the `package` resource type.
+
+#### Examples
+
+##### usage AWS windows installation:
+
+```puppet
+cloudfile::getfile { 'putty-64bit-0.76-installer.msi.zip':
+  application     => 'PuTTY release 0.76 (64-bit)',
+  cloud_download  => 'aws_s3',
+  extract         => true,
+  package_uri     => 's3://chrislorro',
+  aws_region      => 'eu-west2',
+  install_package => true,
+  $installer_exe   => putty-64bit-0.76-installer.msi,
+}
+```
+
+##### retrieve an application call McAfee from AZ storage and install the application
+
+```puppet
+cloudfile::getfile { 'McAfee.zip':
+  application     => 'mcafee',
+  package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
+  extract         => true,
+  cloud_download  => 'secure',
+  install_package => true,
+  token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
+  installer_exe    => McAfee.exe,
+  install_options => [ '/SILENT', '/INSTALL=AGENT']
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `cloudfile::getfile` defined type:
+
+* [`application`](#application)
+* [`package_name`](#package_name)
+* [`package_uri`](#package_uri)
+* [`extract`](#extract)
+* [`cloud_download`](#cloud_download)
+* [`install_package`](#install_package)
+* [`installer_exe`](#installer_exe)
+* [`install_options`](#install_options)
+* [`token`](#token)
+* [`aws_region`](#aws_region)
+* [`installer`](#installer)
+
+##### <a name="application"></a>`application`
+
+Data type: `String`
+
+The application name that is being installed, use the exact application
+string for windows so that the package resource runs idempotent
+
+Default value: ``undef``
+
+##### <a name="package_name"></a>`package_name`
+
+The package name that will be downloaded from cloud storage
+
+##### <a name="package_uri"></a>`package_uri`
+
+Data type: `String`
+
+The URL of the cloud storage where the package is stored
+
+Default value: ``undef``
+
+##### <a name="extract"></a>`extract`
+
+Data type: `Boolean`
+
+set this parameter to extract the package from an archive file,
+it defaults to true because we expect a compressed file
+
+Default value: ``true``
+
+##### <a name="cloud_download"></a>`cloud_download`
+
+Data type: `Enum[ 'standard',
+        'aws_s3',
+        'secure' ]`
+
+The cloud platform that is used to host the application package
+Accepts 3 different parametes:
+*- standard: standard download using http://URI https://URI
+*- aws_s3: Dowload using s3://URI and optional $install_options
+*- secure: Download using a secure token, must be used exclusive with token parameter
 
 Default value: ``undef``
 
@@ -161,118 +266,32 @@ Default value: ``undef``
 
 Data type: `Boolean`
 
-
+Boolean true or false to install the extracted package
 
 Default value: ``false``
 
-## Defined types
-
-### <a name="cloudfilegetfile"></a>`cloudfile::getfile`
-
-== Definition: cloudfile::getfile
-
-Parameters:
- @param $ensure
-  $ensure: default value true.
-
- cloudfile::getfile { 'mycloudapp.2.0.tar.gz':
-   app_name   => 'mycloudapp',
-   cloud_type => 'azure',
-   access_key => '<azure token key>'
-   pkg_uri    => 'http://clouduri/blob/distro/v2.0',
- }
-
-Example usage:
- cloudfile::getfile { 'mycloudapp.2.0.tar.gz':
-   app_name   => 'mycloudapp',
-   cloud_type => 'aws',
-   extract    => false,
-   pkg_uri    => 'http://clouduri/blob/distro/v2.0',
-   aws_region => 'eu-west2',
- }
-
-#### Parameters
-
-The following parameters are available in the `cloudfile::getfile` defined type:
-
-* [`pkg_uri`](#pkg_uri)
-* [`$app_name`](#$app_name)
-* [`$extract`](#$extract)
-* [`$cloud_type`](#$cloud_type)
-* [`$access_key`](#$access_key)
-* [`$aws_region`](#$aws_region)
-* [`app_name`](#app_name)
-* [`extract`](#extract)
-* [`ensure`](#ensure)
-* [`cloud_type`](#cloud_type)
-* [`access_key`](#access_key)
-* [`aws_region`](#aws_region)
-
-##### <a name="pkg_uri"></a>`pkg_uri`
-
-Data type: `String`
-
-$pkg_uri: $package_uri
-
-Default value: `$package_uri`
-
-##### <a name="$app_name"></a>`$app_name`
-
-$app_name: $application
-
-##### <a name="$extract"></a>`$extract`
-
-$extract: default value true.
-
-##### <a name="$cloud_type"></a>`$cloud_type`
-
-$cloud_type: default value standard
-
-##### <a name="$access_key"></a>`$access_key`
-
-$access_key: optional param default undef
-
-##### <a name="$aws_region"></a>`$aws_region`
-
-$aws_region: optional param default is undef
-
-##### <a name="app_name"></a>`app_name`
-
-Data type: `String`
-
-
-
-Default value: `$application`
-
-##### <a name="extract"></a>`extract`
-
-Data type: `Boolean`
-
-
-
-Default value: ``true``
-
-##### <a name="ensure"></a>`ensure`
-
-Data type: `Enum['present', 'absent']`
-
-
-
-Default value: `present`
-
-##### <a name="cloud_type"></a>`cloud_type`
-
-Data type: `String`
-
-
-
-Default value: ``undef``
-
-##### <a name="access_key"></a>`access_key`
+##### <a name="installer_exe"></a>`installer_exe`
 
 Data type: `Optional[String]`
 
+Optional parameter to install the package (this option will be enhanced in the next release)
 
+Default value: ``undef``
+
+##### <a name="install_options"></a>`install_options`
+
+Data type: `Optional[Array]`
+
+Optional parameter to pass installation options to the package installer
+
+Default value: ``undef``
+
+##### <a name="token"></a>`token`
+
+Data type: `Optional[String]`
+
+Optional parameter for passing a token to the package URL tested on AZ for now,
+ token is expected if IAM is configured on the platform
 
 Default value: ``undef``
 
@@ -280,7 +299,11 @@ Default value: ``undef``
 
 Data type: `Optional[String]`
 
+Optional parameter for the AWS region, if this is not set for,
+windows agents the package uses a default deployed with the sdk
 
+Default value: ``undef``
 
-Default value: `$aws_region`
+##### <a name="installer"></a>`installer`
 
+Optional paramter for executing install scripts on Linux only

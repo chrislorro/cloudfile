@@ -152,7 +152,7 @@ define cloudfile::getfile (
           ensure          => 'installed',
           source          => $installer,
           install_options => $install_options,
-          require         => Ardchive[$_pkg_inst]
+          require         => Archive[$_pkg_inst]
         }
       }
       'Linux': {
