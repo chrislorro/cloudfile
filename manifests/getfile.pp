@@ -102,6 +102,7 @@ define cloudfile::getfile (
 
     archive { 'Get AWS CLI':
       ensure           => present,
+      path             => 'C:/Windows/TEMP',
       source           => 'https://awscli.amazonaws.com/AWSCLIV2.msi',
       creates          => 'C:/Program Files/Amazon/AWSCLIV2',
       download_options => ['--region', $aws_region],
