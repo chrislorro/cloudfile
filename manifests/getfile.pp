@@ -44,20 +44,20 @@
 #   Optional paramter for executing install scripts on Linux only
 #
 #
-# @example retrieve an application call invader from s3 storage to linux
-#   class { 'cloudfile':
-#     application    => 'invader',
-#     package_file   => 'invader.tar.gz',
-#     package_uri    => 's3://chrislorro',
-#     extract        => true,
-#     cloud_download => aws_s3,
-#     aws_region     => eu-west-2,
-#   }
+# Example usage AWS windows installation:
+#  cloudfile::getfile { 'putty-64bit-0.76-installer.msi.zip':
+#    application     => 'PuTTY release 0.76 (64-bit)',
+#    cloud_download  => 'aws_s3',
+#    extract         => true,
+#    package_uri     => 's3://chrislorro',
+#    aws_region      => 'eu-west2',
+#    install_package => true,
+#    $install_file   => putty-64bit-0.76-installer.msi,
+#  }
 #
-# @example retrieve an application call invader from s3 storage and install the application
-#   class { 'cloudfile': 
+# @example retrieve an application call McAfee from AZ storage and install the application
+#   cloudfile::getfile { 'McAfee.zip': 
 #     application     => 'mcafee',
-#     package_file    => 'McAfee.zip',
 #     package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
 #     extract         => true,
 #     cloud_download  => 'secure',
@@ -68,7 +68,7 @@
 #   }
 define cloudfile::getfile (
   String             $application     = undef,
-  String             $package_file    = undef,
+  String             $package_file    = $title,
   String             $package_uri     = undef,
   Boolean            $extract         = true,
   Boolean            $install_package = false,
