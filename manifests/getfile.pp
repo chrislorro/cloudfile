@@ -107,12 +107,18 @@ define cloudfile::getfile (
       notify          => Archive[$_pkg_inst]
     }
 
+    file { '/root/.aws':
+      ensure => directory,
+      mode   => '0755',
+      owner  => root,
+      before => Class['archive'],
+    }
+
     file { '/root/.aws/config':
       ensure  => file,
       mode    => '0640',
       owner   => root,
       content => epp('cloudfile/awsconfig.epp'),
-      before  => Class['archive'],
     }
   }
 
