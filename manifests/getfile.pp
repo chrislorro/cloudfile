@@ -111,7 +111,7 @@ define cloudfile::getfile (
       ensure  => file,
       mode    => '0640',
       owner   => root,
-      content => epp('cloudfile/awsconfig.pp'),
+      content => epp('cloudfile/awsconfig.epp'),
       before  => Class['archive'],
     }
   }
