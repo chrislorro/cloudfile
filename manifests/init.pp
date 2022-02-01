@@ -86,8 +86,6 @@ class cloudfile (
     'windows' => 'C:/Windows/TEMP'
   }
 
-  include archive
-
   cloudfile::getfile { $package_file:
     package_uri => $package_uri,
     application => $application,
