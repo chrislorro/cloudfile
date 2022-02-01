@@ -1,54 +1,169 @@
-# @summary Accepts parameters for downloadind and extracting files.
+# @summary Download archived packages from various locations and optionally local install.
 #
-# == Definition: cloudfile::getfile
+# A module to download application files from cloud filestores or http/https hosted packages,
+# currently compatable with AWS and Azure cloud providers. Package installation features will
+# be added in future releases, including running a template to install custom applications
+# that cannot use the `package` resource type.
 #
-# Parameters:
+# @param application
+#   The application name that is being installed, use the exact application
+#   string for windows so that the package resource runs idempotent
+#
+# @param package_file
+#   The package name that will be downloaded from cloud storage
+#
 # @param package_uri
-#   $package_uri: $package_uri
+#   The URL of the cloud storage where the package is stored
 #
-# @param $application
-#   $application: $application
+# @param extract
+#   set this parameter to extract the package from an archive file,
+#   it defaults to true because we expect a compressed file
 #
-# @param $extract
-#   $extract: default value true.
+# @param cloud_download
+#   The cloud platform that is used to host the application package
+#   Accepts 3 different parametes:
+#   *- standard: standard download using http://URI https://URI 
+#   *- aws_s3: Dowload using s3://URI and optional $install_options
+#   *- secure: Download using a secure token, must be used exclusive with token parameter
 #
-# @param $ensure
-#   $ensure: default value true.
+# @param install_file
+#   Optional parameter to install the package (this option will be enhanced in the next release)
 #
-# @param $cloud_type
-#   $cloud_type: default value standard
+# @param install_options
+#   Optional parameter to pass installation options to the package installer
 #
-# @param $access_key
-#   $access_key: optional param default undef
+# @param token
+#   Optional parameter for passing a token to the package URL tested on AZ for now, 
+#    token is expected if IAM is configured on the platform
 #
-# @param $aws_region
-#   $aws_region: optional param default is undef
+# @param aws_region
+#   Optional parameter for the AWS region, if this is not set for,
+#   windows agents the package uses a default deployed with the sdk
 #
-#  cloudfile::getfile { 'mycloudapp.2.0.tar.gz':
-#    application => 'mycloudapp',
-#    cloud_type  => 'azure',
-#    access_key  => '<azure token key>'
-#    package_uri => 'http://clouduri/blob/distro/v2.0',
-#  }
+# @param installer
+#   Optional paramter for executing install scripts on Linux only
 #
-# Example usage AWS windows installation:
-#  cloudfile::getfile { 'putty-64bit-0.76-installer.msi.zip':
-#    application => 'PuTTY release 0.76 (64-bit)',
-#    cloud_download => 'aws_s3',
-#    extract        => true,
-#    package_uri    => 's3://chrislorro',
-#    aws_region     => 'eu-west2',
-#  }
-define cloudfile::getfile (
-
-  String                    $package_uri  = $package_uri,
-  String                    $application  = $application,
-  Boolean                   $extract      = true,
-  Enum['present', 'absent'] $ensure       = present,
-  String                    $cloud_type   = undef,
-  Optional[String]          $access_key   = undef,
-  Optional[String]          $username     = Administrator,
-  Optional[String]          $aws_region   = $aws_region,
+#
+# @example retrieve an application call invader from s3 storage to linux
+#   class { 'cloudfile':
+#     application    => 'invader',
+#     package_file   => 'invader.tar.gz',
+#     package_uri    => 's3://chrislorro',
+#     extract        => true,
+#     cloud_download => aws_s3,
+#     aws_region     => eu-west-2,
+#   }
+#
+# @example retrieve an application call invader from s3 storage and install the application
+#   class { 'cloudfile': 
+#     application     => 'mcafee',
+#     package_file    => 'McAfee.zip',
+#     package_uri     => 'https://chrislorro.blob.core.windows.net/puppet,
+#     extract         => true,
+#     cloud_download  => 'secure',
+#     install_package => true,
+#     token           => 'sp=rwd&st=2022-01-27T11:46[…]sig=2ytxxRcpND1Khs4UgUL1tfMxOwHsZMMit'
+#     install_file    => McAfee.exe,
+#     install_options => [ '/SILENT', '/INSTALL=AGENT']
+#   }
+class cloudfile::getfile (
+  String             $application     = undef,
+  String             $package_file    = undef,
+  String             $package_uri     = undef,
+  Boolean            $extract         = true,
+  Boolean            $install_package = false,
+  Enum[ 'standard',
+        'aws_s3',
+        'secure' ]   $cloud_download  = undef,
+  Optional[String]   $token           = undef,
+  Optional[String]   $aws_region      = undef,
+  Optional[String]   $install_file    = undef,
+  Optional[Array]    $install_options = undef,
 
 ) {
 
+  $temp_dir = $facts['kernel'] ? {
+    default   => '/var/tmp',
+    'windows' => 'C:/Windows/TEMP'
+  }
+
+  $_extract_dir = "${temp_dir}/${application}"
+  $_pkg_inst    = "${_extract_dir}/${title}"
+
+  $_pkg_src_uri = $cloud_download ? {
+    default   => "${package_uri}/${title}",
+    'secure' => "${package_uri}/${title}?${token}",
+  }
+
+  if $facts['osfamily'] == 'windows' {
+
+    archive { 'Get AWS CLI':
+      ensure           => present,
+      source           => 'https://awscli.amazonaws.com/AWSCLIV2.msi',
+      creates          => 'C:/Program Files/Amazon/AWSCLIV2',
+      download_options => ['--region', $aws_region],
+    }
+
+    package { 'AWS Command Line Interface v2':
+      ensure          => 'installed',
+      source          => 'C:/Windows/TEMP/awscliv2.msi',
+      install_options => [ '/qn'],
+      require         => Archive['Get AWS CLI'],
+      notify          => Archive[$_pkg_inst]
+    }
+
+  } else {
+
+    class { 'archive':
+      aws_cli_install => true,
+      notify          => Archive[$_pkg_inst]
+    }
+  }
+
+  $download_options = $cloud_download ? {
+    aws_s3 => ['--region', $aws_region, '--no-sign-request'],
+    default  => undef,
+  }
+
+  archive { $_pkg_inst:
+    ensure           => present,
+    extract          => $extract,
+    source           => $_pkg_src_uri,
+    extract_path     => $_extract_dir,
+    creates          => $_pkg_inst,
+    cleanup          => false,
+    download_options => $download_options,
+  }
+
+  if $install_package {
+
+    if ! $application {
+      fail('required $application not passed')
+    }
+
+    $installer = "${temp_dir}/${application}/${$install_file}"
+
+    case $facts['kernel'] {
+      'windows': {
+        package { $application:
+          ensure          => 'installed',
+          source          => $installer,
+          install_options => $install_options,
+          require         => Ardchive[$_pkg_inst]
+        }
+      }
+      'Linux': {
+
+        $_install_command = "${installer} ${install_options}"
+        exec { $application:
+          command     =>  $_install_command,
+          refreshonly => true,
+          path        => $_install_command,
+          timeout     => '300',
+          require     => Ardchive[$_pkg_inst]
+        }
+      }
+      default: {}
+    }
+  }
+}
