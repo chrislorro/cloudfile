@@ -69,11 +69,12 @@
 #     install_options => [ '/SILENT', '/INSTALL=AGENT']
 #   }
 class cloudfile (
-  String             $application     = undef,
-  String             $package_name    = undef,
-  String             $package_uri     = undef,
-  Boolean            $extract         = true,
-  Boolean            $install_package = false,
+  String             $application        = undef,
+  String             $package_name       = undef,
+  String             $package_uri        = undef,
+  Boolean            $extract            = true,
+  Boolean            $install_package    = false,
+  Boolean            $include_chocolatey = true,
   Enum[ 'standard',
         'aws_s3',
         'secure' ]   $cloud_download  = undef,
@@ -82,6 +83,10 @@ class cloudfile (
   Optional[String]   $installer_exe    = undef,
   Optional[Array]    $install_options = undef,
 ) {
+
+  if $include_chocolatey {
+    include chocolatey
+  }
 
   cloudfile::getfile { $package_name:
     package_uri     => $package_uri,

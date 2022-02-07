@@ -183,7 +183,7 @@ cloudfile::getfile { 'putty-64bit-0.76-installer.msi.zip':
   package_uri     => 's3://chrislorro',
   aws_region      => 'eu-west2',
   install_package => true,
-  $installer_exe   => putty-64bit-0.76-installer.msi,
+  $installer_exe   => 'putty-64bit-0.76-installer.msi',
 }
 ```
 
