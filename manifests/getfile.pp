@@ -98,9 +98,9 @@ define cloudfile::getfile (
 
   if $facts['osfamily'] == 'windows' {
 
-    windows_env { 'PATH=C:\Program Files\Amazon\AWSCLIV2\\':
+    windows_env { 'PATH=C:/Program Files/Amazon/AWSCLIV2':
       ensure    => present,
-      mergemode => append,
+      mergemode => clobber,
       before    => Archive['Get AWS CLI']
     }
 
