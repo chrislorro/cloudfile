@@ -72,6 +72,8 @@ This is a beta version and is under development its been tested for downloading 
 
 This package install is in the early stages and will be improved during the next release
 
+The AWSCLI requires to puppet agent runs on windows because the %PATH% is not set during the first execution
+
 ## Development
 
 If you run into an issue with this module, or if you would like to request a feature, you can fork the repo and submit a PR, raise a bug or new feature request.

@@ -6,31 +6,21 @@
   "license": "Apache-2.0",
   "source": "",
   "dependencies": [
-
+    {
+      "name": "puppet/windows_env",
+      "version_requirement": ">= 5.5.8 < 7.0.0"
+    },
+    {
+      "name": "puppet/archive",
+      "version_requirement": ">= 6.1.0 < 7.0.0"
+    }
   ],
   "operatingsystem_support": [
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "OracleLinux",
-      "operatingsystemrelease": [
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "RedHat",
-      "operatingsystemrelease": [
+        "7",
         "8"
-      ]
-    },
-    {
-      "operatingsystem": "Scientific",
-      "operatingsystemrelease": [
-        "7"
       ]
     },
     {
@@ -48,6 +38,7 @@
     {
       "operatingsystem": "windows",
       "operatingsystemrelease": [
+        "2016",
         "2019",
         "10"
       ]
@@ -57,7 +48,18 @@
     {
       "name": "puppet",
       "version_requirement": ">= 6.21.0 < 8.0.0"
-    }
+    },
+    {
+      "name": "puppet_enterprise",
+      "version_requirement": ">= 2019.8.4 < 2022.0.0"
+    }   
+  ],
+  "tags": [
+    "download",
+    "cloud",
+    "install packages",
+    "files",
+    "archive"
   ],
   "pdk-version": "2.2.0",
   "template-url": "pdk-default#1.17.0",
