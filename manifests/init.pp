@@ -12,6 +12,9 @@
 # @param install_package
 #   Boolean true or false to install the extracted package
 #
+# @param include_chocolatey
+#   Boolean true or false to include chocolatey on windows
+#
 # @param package_name
 #   The package name that will be downloaded from cloud storage
 #
@@ -84,7 +87,7 @@ class cloudfile (
   Optional[Array]    $install_options = undef,
 ) {
 
-  if $include_chocolatey {
+  if $include_chocolatey and $facts['kernel'] == 'windows' {
     include chocolatey
   }
 
