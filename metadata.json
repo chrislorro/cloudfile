@@ -2,9 +2,9 @@
   "name": "chrislorro-cloudfile",
   "version": "0.1.0",
   "author": "Chris Lawrence",
-  "summary": "",
+  "summary": "Download files from cloud providers and install the package, can be declared for a singe package or use the define",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/chrislorro/cloudfile.git",
   "dependencies": [
     {
       "name": "puppet/windows_env",
@@ -52,7 +52,7 @@
     {
       "name": "puppet_enterprise",
       "version_requirement": ">= 2019.8.4 < 2022.0.0"
-    }   
+    }
   ],
   "tags": [
     "download",
