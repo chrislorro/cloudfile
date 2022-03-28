@@ -83,9 +83,17 @@ class cloudfile (
         'secure' ]   $cloud_download  = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
-  Optional[String]   $installer_exe    = undef,
+  Optional[String]   $installer_exe   = undef,
   Optional[Array]    $install_options = undef,
 ) {
+
+  $temp_dir = $facts['kernel'] ? {
+    default   => '/var/tmp',
+    'windows' => 'C:/Windows/TEMP'
+  }
+
+  $_extract_dir = "${temp_dir}/${application}"
+  $_pkg_inst    = "${_extract_dir}/${title}"
 
   if $include_chocolatey and $facts['kernel'] == 'windows' {
     include chocolatey
@@ -101,5 +109,37 @@ class cloudfile (
     install_package => $install_package,
     installer_exe   => $installer_exe,
     install_options => $install_options,
+  }
+
+  if $install_package {
+
+    if ! $application {
+      fail('required $application not passed')
+    }
+
+    $installer = "${temp_dir}/${application}/${$installer_exe}"
+
+    case $facts['kernel'] {
+      'windows': {
+        package { $application:
+          ensure          => 'installed',
+          source          => $installer,
+          install_options => $install_options,
+          require         => Archive[$_pkg_inst]
+        }
+      }
+      'Linux': {
+
+        $_install_command = "${installer} ${install_options}"
+        exec { $application:
+          command     =>  $_install_command,
+          refreshonly => true,
+          path        => $_install_command,
+          timeout     => '300',
+          require     => Archive[$_pkg_inst]
+        }
+      }
+      default: {}
+    }
   }
 }

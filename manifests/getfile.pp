@@ -78,7 +78,7 @@ define cloudfile::getfile (
         'secure' ]   $cloud_download  = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
-  Optional[String]   $installer_exe    = undef,
+  Optional[String]   $installer_exe   = undef,
   Optional[Array]    $install_options = undef,
 
 ) {
@@ -143,37 +143,5 @@ define cloudfile::getfile (
     creates          => $_pkg_inst,
     cleanup          => false,
     download_options => $download_options,
-  }
-
-  if $install_package {
-
-    if ! $application {
-      fail('required $application not passed')
-    }
-
-    $installer = "${temp_dir}/${application}/${$installer_exe}"
-
-    case $facts['kernel'] {
-      'windows': {
-        package { $application:
-          ensure          => 'installed',
-          source          => $installer,
-          install_options => $install_options,
-          require         => Archive[$_pkg_inst]
-        }
-      }
-      'Linux': {
-
-        $_install_command = "${installer} ${install_options}"
-        exec { $application:
-          command     =>  $_install_command,
-          refreshonly => true,
-          path        => $_install_command,
-          timeout     => '300',
-          require     => Ardchive[$_pkg_inst]
-        }
-      }
-      default: {}
-    }
   }
 }
