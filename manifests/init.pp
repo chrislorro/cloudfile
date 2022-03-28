@@ -83,7 +83,7 @@ class cloudfile (
         'secure' ]   $cloud_download  = undef,
   Optional[String]   $token           = undef,
   Optional[String]   $aws_region      = undef,
-  Optional[String]   $installer_exe    = undef,
+  Optional[String]   $installer_exe   = undef,
   Optional[Array]    $install_options = undef,
 ) {
 
